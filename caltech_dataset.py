@@ -94,7 +94,6 @@ class Caltech(VisionDataset):
         '''
         if self.transform is not None:
             image = self.transform(image)
-
         path, target = self.instances[index]
         print(path,target)
         img = pil_loader(index)
