@@ -92,7 +92,6 @@ class Caltech(VisionDataset):
                            # Image should be a PIL Image
                            # label can be int
         '''
-        # Applies preprocessing when accessing the image
         if self.transform is not None:
             image = self.transform(image)
 
