@@ -20,6 +20,54 @@ class Caltech(VisionDataset):
 
         self.split = split # This defines the split you are going to use
                            # (split files are called 'train.txt' and 'test.txt')
+        
+        f=open(root+split+'.txt', "r")
+       
+        dataset = []
+        for line in f:
+            if(line.find("BACKGROUND_Google")==-1):              
+                dataset.append(line)
+
+        f.close()
+        print(len(dataset))
+              
+        labels = os.listdir("Caltech101/101_ObjectCategories")
+        labels.remove("BACKGROUND_Google")
+        labels.sort()
+
+        self.labels = labels
+
+        ### ACCOPPIO LE CLASSE A NUMERI ##
+        ### LABELS_INDEX = DICT (NAME : INDEX) ###
+
+        labels_index = {labels[i]: i for i in range(len(labels))}
+        #print (labels_index)
+
+        self.labels_index = labels_index
+        
+        directory = os.path.expanduser("Caltech101/101_ObjectCategories")
+
+
+        ## CREO COPPIE PATH,LABEL ##
+        ## INSTANCES = LIST [ PATH,INDEX ]
+        instances = []
+
+        for i in range(0, len(dataset)):
+            riconoscimento = dataset[i].split("/")[0]
+           
+            path = 'Caltech101/101_ObjectCategories/' + dataset[i]
+            
+            class_index = labels_index.get(riconoscimento)
+            item = (path[:len(path)-1],class_index)
+            instances.append(item)
+            
+        self.instances = instances
+        
+        ## CREO VETTORE LABELS ##
+
+        targets = [s[1] for s in instances]
+        self.targets = targets
+
 
         '''
         - Here you should implement the logic for reading the splits files and accessing elements
@@ -38,22 +86,28 @@ class Caltech(VisionDataset):
 
         Returns:
             tuple: (sample, target) where target is class_index of the target class.
-        '''
+        
 
         image, label = ... # Provide a way to access image and label via index
                            # Image should be a PIL Image
                            # label can be int
-
+        '''
         # Applies preprocessing when accessing the image
-        if self.transform is not None:
+       if self.transform is not None:
             image = self.transform(image)
 
-        return image, label
+        path, target = self.instances[index]
+        print(path,target)
+        img = pil_loader(index)
+        print(img,target)
+
+        return img, target
+
 
     def __len__(self):
         '''
         The __len__ method returns the length of the dataset
         It is mandatory, as this is used by several other components
         '''
-        length = ... # Provide a way to get the length (number of elements) of the dataset
+        length = len(self.instances) # Provide a way to get the length (number of elements) of the dataset
         return length
