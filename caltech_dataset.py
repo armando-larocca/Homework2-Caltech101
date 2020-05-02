@@ -92,11 +92,12 @@ class Caltech(VisionDataset):
                            # Image should be a PIL Image
                            # label can be int
         '''
-        if(self.transform is not None):
-            image = self.transform(image)
-            
+        
         path, target = self.instances[index]
-        img = pil_loader(index)
+        img = pil_loader(path)
+        
+        if(self.transform is not None):
+            img = self.transform(img)
         
         return img, target
 
