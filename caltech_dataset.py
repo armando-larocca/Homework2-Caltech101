@@ -22,36 +22,25 @@ class Caltech(VisionDataset):
                            # (split files are called 'train.txt' and 'test.txt')
         
         f=open(root+split+'.txt', "r")
-       
         dataset = []
         for line in f:
             if(line.find("BACKGROUND_Google")==-1):              
                 dataset.append(line)
-
         f.close()
-        print(len(dataset))
+        
               
         labels = os.listdir("Caltech101/101_ObjectCategories")
         labels.remove("BACKGROUND_Google")
         labels.sort()
-
         self.labels = labels
 
-        ### ACCOPPIO LE CLASSE A NUMERI ##
-        ### LABELS_INDEX = DICT (NAME : INDEX) ###
 
         labels_index = {labels[i]: i for i in range(len(labels))}
-        #print (labels_index)
-
         self.labels_index = labels_index
         
+        
         directory = os.path.expanduser("Caltech101/101_ObjectCategories")
-
-
-        ## CREO COPPIE PATH,LABEL ##
-        ## INSTANCES = LIST [ PATH,INDEX ]
         instances = []
-
         for i in range(0, len(dataset)):
             riconoscimento = dataset[i].split("/")[0]
            
@@ -59,12 +48,10 @@ class Caltech(VisionDataset):
             
             class_index = labels_index.get(riconoscimento)
             item = (path[:len(path)-1],class_index)
-            instances.append(item)
-            
+            instances.append(item)      
         self.instances = instances
         
-        ## CREO VETTORE LABELS ##
-
+        
         targets = [s[1] for s in instances]
         self.targets = targets
 
